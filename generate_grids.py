@@ -3,13 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# Define grid dimensions
 GRID_SIZE = 101
-
-# Probability of a cell being blocked (30%)
 BLOCK_PROBABILITY = 0.3
-
-# Directions for DFS traversal: N, S, E, W
 DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
 # Initialize a grid with all cells marked as unvisited (-1)
@@ -21,7 +16,7 @@ def is_valid(x, y, grid):
     return 0 <= x < GRID_SIZE and 0 <= y < GRID_SIZE and grid[x, y] == -1
 
 # Depth-First Search (DFS) function to generate the grid
-def depth_first_search_iterative(grid, start_x, start_y):
+def depth_first_search(grid, start_x, start_y):
     stack = [(start_x, start_y)]  # Initialize stack with starting position
 
     while stack:
@@ -61,7 +56,7 @@ def generate_gridworld():
     start_x, start_y = random.randint(0, GRID_SIZE-1), random.randint(0, GRID_SIZE-1)
     
     # Run iterative DFS from a random starting point
-    depth_first_search_iterative(grid, start_x, start_y)
+    depth_first_search(grid, start_x, start_y)
     
     return grid
 
