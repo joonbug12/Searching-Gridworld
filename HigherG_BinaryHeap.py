@@ -1,4 +1,4 @@
-class BinaryHeap:
+class HigherG_BinaryHeap:
     #constructor for the binary heap
     def __init__(self):
         self.heap=[]
@@ -31,25 +31,23 @@ class BinaryHeap:
     def swim(self, index):
         parentIndex = self.parent(index)
 
-        if index>0 and self.heap[index] < self.heap[parentIndex]:
-            #swap if the current element has a higher priority than the parent
+        while index > 0 and self._compare(self.heap[index], self.heap[parentIndex]):
             self.heap[index], self.heap[parentIndex] = self.heap[parentIndex], self.heap[index]
-            self.swim(parentIndex)
+            index = parentIndex
+            parentIndex = self.parent(index)
 
     #this method ensures that the heap is properly maintained after an element is taken out
     def sink(self, index):
-        leftIndex = self.left_child(index)
-        rightIndex = self.right_child(index)
+        left = self.left_child(index)
+        right = self.right_child(index)
         smallest = index
 
-        if leftIndex<len(self.heap) and self.heap[leftIndex]<self.heap[smallest]:
-            smallest = leftIndex
-        
-        if rightIndex<len(self.heap) and self.heap[rightIndex]<self.heap[smallest]:
-            smallest = rightIndex
-        
+        if left < len(self.heap) and self._compare(self.heap[left], self.heap[smallest]):
+            smallest = left
+        if right < len(self.heap) and self._compare(self.heap[right], self.heap[smallest]):
+            smallest = right
+
         if smallest != index:
-            #swap with the smaller child and continue
             self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
             self.sink(smallest)
 
@@ -58,15 +56,33 @@ class BinaryHeap:
     def insert(self, element):
         self.heap.append(element)
         self.swim(len(self.heap) -1)
+        print(f"Inserted into heap: {element}")  # Check the structure of elements inserted
+
 
     #taking the highest priority element out of the heap or basically the lowest value or basically just the root
     def extract(self):
-        if len(self.heap)==0: return None
-        if len(self.heap)==1: return self.heap.pop()
+        if len(self.heap) == 0:
+            return None
+        if len(self.heap) == 1:
+            return self.heap.pop()
 
-        root=self.heap[0]
+        root = self.heap[0]
         self.heap[0] = self.heap.pop()
         self.sink(0)
+    
+        # Debugging print to check the structure of root
+        print(f"Extracted from heap: {root}")  # This should be a tuple of 3 values
+    
         return root
+    
+    def _compare(self, node1, node2):
+        # Compare based on f-values first
+        f1, g1, node1_coords = node1
+        f2, g2, node2_coords = node2
+
+        # Tie-breaking logic: favor lower g-values (for higher g-values, flip this comparison)
+        if f1 == f2:
+            return g1 > g2  # Favor higher g-value nodes
+        return f1 < f2
 
     
