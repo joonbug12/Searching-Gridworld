@@ -244,5 +244,5 @@ def run_AdaptiveAStar(grid_directory, grid_file):
 
 if __name__ == "__main__":
     grid_directory = '/Users/joonsong/Desktop/Intro-to-AI/Project1/gridworlds'
-    grid_file = 'zgridworld_0.npy'  # Replace with your grid file
+    grid_file = 'gridworld_0.npy'  # Replace with your grid file
     run_AdaptiveAStar(grid_directory, grid_file)
