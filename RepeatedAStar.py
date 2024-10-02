@@ -210,6 +210,6 @@ def run_RepeatedAStar(grid_directory, grid_file):
         print("No path was found to reach the goal.")
 
 if __name__ == "__main__":
-    grid_directory = '/Users/joonsong/Desktop/Intro-to-AI/Project1'
+    grid_directory = '/Users/joonsong/Desktop/Intro-to-AI/Project1/gridworlds'
     grid_file = 'zgridworld_0.npy'  # Replace with your grid file
     run_RepeatedAStar(grid_directory, grid_file)

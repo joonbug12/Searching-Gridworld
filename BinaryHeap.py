@@ -24,7 +24,9 @@ class BinaryHeap:
     def is_empty(self) : return len(self.heap)==0
 
     #checks if a node is in the heap
-    def contains(self, element): return element in self.heap
+    def contains(self, element):
+        node = element[1]  # Only check for the node, not the f-value
+        return any(item[1] == node for item in self.heap)
 
     #used for when inserting a node into the heap. If the index being inserted has a higher priority than the parent,
     #it will swim up the heap. Process repeats until the node is in the correct position.

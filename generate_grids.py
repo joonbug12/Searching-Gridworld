@@ -82,6 +82,6 @@ def generate_multiple_gridworlds(save_directory):
 # Run the code to generate and save multiple gridworlds
 if __name__ == "__main__":
     # Specify the directory where you want to save the .npy files
-    save_directory = '/Users/joonsong/Desktop/Intro-to-AI/Project1'  # You can customize this path
+    save_directory = '/Users/joonsong/Desktop/Intro-to-AI/Project1/gridworlds'  
 
     generate_multiple_gridworlds(save_directory)
