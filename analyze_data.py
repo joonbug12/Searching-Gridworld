@@ -1,6 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+#This file is used to analyze the data gained from compare algorithms
+#Author: Joon Song, Anay Kothana
+
 # Load the CSV results
 df = pd.read_csv('a_star_comparison_results.csv')
 

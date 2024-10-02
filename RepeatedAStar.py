@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from BinaryHeap import BinaryHeap
 
+#this file implements repeated a star
+#Authors: Joon Song, Anay Kothana
+
 # Constants and cardinal directions
 GRID_SIZE = 101
 DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -49,7 +52,6 @@ class RepeatedAStar:
         return neighbors
 
     def search(self, start):
-        # Initialize open and closed lists for each search
         self.open_list = BinaryHeap()
         self.closed_list = set()
 
@@ -57,7 +59,6 @@ class RepeatedAStar:
         self.fvalues = {start: self.heuristic(start)}
         self.parent = {}
 
-        # Insert the start node into the open list
         self.open_list.insert((self.fvalues[start], -self.gvalues[start], start))
 
         while not self.open_list.is_empty():
@@ -211,5 +212,5 @@ def run_RepeatedAStar(grid_directory, grid_file):
 
 if __name__ == "__main__":
     grid_directory = '/Users/joonsong/Desktop/Intro-to-AI/Project1/'
-    grid_file = 'gridworlds/gridworld_0.npy'  # Replace with your grid file
+    grid_file = 'gridworlds/gridworld_0.npy'  # replace with your grid file
     run_RepeatedAStar(grid_directory, grid_file)

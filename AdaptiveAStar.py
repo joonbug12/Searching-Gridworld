@@ -3,36 +3,38 @@ import os
 import random
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from BinaryHeap import BinaryHeap  # Ensure BinaryHeap handles (f, -g, cell) tuples correctly
+from BinaryHeap import BinaryHeap 
 
 # Constants and cardinal directions
 GRID_SIZE = 101
 DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
+#this class is used to run adaptive a star
+#authors: Joon Song, Anay Kothana
 class AdaptiveAStar:
     def __init__(self, grid, start, goal):
         self.grid = grid
         self.start = start
         self.goal = goal
 
-        # Agent's knowledge of the grid: -1 = unknown, 0 = unblocked, 1 = blocked
+        # agent knowledge of the grid: -1 = unknown, 0 = unblocked, 1 = blocked
         self.known_grid = np.full((GRID_SIZE, GRID_SIZE), -1)
         self.known_grid[start] = 0  # Agent knows the start cell is unblocked
 
-        # Initialize g-values, h-values, f-values, and parent pointers
+        # initialize stuff
         self.gvalues = {}
         self.hvalues = {}
         self.fvalues = {}
         self.parent = {}
 
-        # Initialize open and closed lists
+        # initialize open and closed lists
         self.open_list = BinaryHeap()
         self.closed_list = set()
 
-        # Initialize the agent's path
+        # initialize the agent's path
         self.path = []
 
-        # Initialize all g-values and f-values to infinity, and h-values using the heuristic
+        # initialize all g-values and f-values to infinity, and h-values using the heuristic (inf is easily identifiable)
         for x in range(GRID_SIZE):
             for y in range(GRID_SIZE):
                 self.gvalues[(x, y)] = float('inf')
@@ -46,12 +48,14 @@ class AdaptiveAStar:
         # Insert the start node into the open list with proper tie-breaking
         self.open_list.insert((self.fvalues[self.start], -self.gvalues[self.start], self.start))
 
+    #this function calculates the heuristic value by using the manhattan distance (absolute differnce of x + absolute difference y)
+    #returns the heuristic value
     def heuristic(self, cell):
-        # Heuristic is the Manhattan distance from the current cell to the goal
         x, y = cell
         goal_x, goal_y = self.goal
         return abs(x - goal_x) + abs(y - goal_y)
 
+    #this function gets the neighbors and returns an array
     def get_neighbors(self, cell):
         x, y = cell
         neighbors = []
@@ -64,6 +68,8 @@ class AdaptiveAStar:
                     neighbors.append((nx, ny))
         return neighbors
 
+    #this is the main search method
+    #returns the path if goal is found, none otherwise
     def search(self):
         # Reset open and closed lists for each search
         self.open_list = BinaryHeap()
@@ -105,24 +111,27 @@ class AdaptiveAStar:
         # No path found
         return None
 
+    #this function flipflops the path so its not reversed. Return the array of the nodes in order
     def reconstruct_path(self, current):
         path = []
         while current in self.parent:
             path.append(current)
             current = self.parent[current]
-        path.append(current)  # Append the start node
+        path.append(current)  # add the start node
         path.reverse()
         return path
 
+    #this function updates the heuristic value after searching
     def update_heuristics(self):
         g_goal = self.gvalues[self.goal]
         if g_goal == float('inf'):
-            return  # Goal was not reached in the last search; heuristics remain unchanged
+            return  # Goal was not reached, so heuristic is unchanged
 
         for node in self.closed_list:
             if self.gvalues[node] < float('inf'):
                 self.hvalues[node] = g_goal - self.gvalues[node]
 
+    #this function helps the agent gain information of the gridworld by looking in each direction
     def observe_adjacent_cells(self, position):
         x, y = position
         for dx, dy in DIRECTIONS:
@@ -132,6 +141,8 @@ class AdaptiveAStar:
                     # Observe the actual grid
                     self.known_grid[nx, ny] = self.grid[nx, ny]
 
+    #this function checks if the path is blocked
+    #returns true if blocked, false otherwise
     def is_path_blocked(self, path):
         for cell in path:
             x, y = cell
@@ -139,64 +150,68 @@ class AdaptiveAStar:
                 return True
         return False
 
+    #runs the search. 
+    #return true if the path is found, false otherwise
     def run(self):
         current_position = self.start
 
         while current_position != self.goal:
-            # Observe adjacent cells
+            # observe adjacent cells
             self.observe_adjacent_cells(current_position)
 
-            # Plan a path from the current position to the goal
+            # plan a path from the current position to the goal
             self.path = self.search()
 
             if not self.path:
                 print("Unable to find a path to the goal.")
                 return False
 
-            # Update heuristics based on this search
+            # update heuristics based on this search
             self.update_heuristics()
 
-            # Follow the planned path until a blocked cell is encountered
+            # follow the planned path until a blocked cell is encountered
             for step in self.path[1:]:  # Skip the current position
                 current_position = step
                 print(f"Agent moving to: {current_position}")
 
-                # Observe adjacent cells at the new position
+                # observe adjacent cells at the new position
                 self.observe_adjacent_cells(current_position)
 
-                # If the current path is now blocked, need to replan
+                # if the current path is now blocked, need to replan
                 remaining_path = self.path[self.path.index(step):]
                 if self.is_path_blocked(remaining_path):
                     print(f"Path is blocked at {current_position}. Replanning...")
                     break  # Exit the for-loop to replan
 
-                # If reached the goal
+                # if reached the goal
                 if current_position == self.goal:
                     print("Goal reached!")
                     return True
             else:
-                # Completed the path without blockage; continue to plan the next path
-                continue  # Continue to the while-loop to plan the next path
+                # completed the path without blockage; continue to plan the next path
+                continue  # continue to the while-loop to plan the next path
 
         print("Goal reached!")
         return True
 
+#loads gridworld and returns gridworld
 def load_gridworld(filename):
     return np.load(filename)
 
+#
 def visualize_grid(grid, known_grid, path, start, goal):
-    # Create a visual grid to represent the agent's knowledge
-    visual_grid = np.full(grid.shape, -1)  # Unknown cells
+    # create a visual grid to represent the agent's knowledge
+    visual_grid = np.full(grid.shape, -1)  # unknown cells
 
-    # Update visual grid with known information
+    # update visual grid with known information
     for x in range(GRID_SIZE):
         for y in range(GRID_SIZE):
             if known_grid[x, y] != -1:
                 visual_grid[x, y] = known_grid[x, y]
 
-    # Mark the path on the visual grid
+    # mark the path on the visual grid
     for x, y in path:
-        visual_grid[x, y] = 0.5  # Use a different value to represent the path
+        visual_grid[x, y] = 0.5  # use a different value to represent the path
 
     # Define a custom colormap
     cmap = mcolors.ListedColormap(['white', 'gray', 'black', 'green'])
@@ -206,7 +221,7 @@ def visualize_grid(grid, known_grid, path, start, goal):
     plt.figure(figsize=(8, 8))
     plt.imshow(visual_grid, cmap=cmap, norm=norm, origin='upper')
 
-    # Mark the start and goal positions
+    # mark the start and goal positions
     plt.plot(start[1], start[0], 'o', color='blue', markersize=8, label='Start')
     plt.plot(goal[1], goal[0], 'X', color='red', markersize=8, label='Goal')
 
@@ -217,11 +232,11 @@ def visualize_grid(grid, known_grid, path, start, goal):
 def run_AdaptiveAStar(grid_directory, grid_file):
     grid = load_gridworld(os.path.join(grid_directory, grid_file))
 
-    # Random start and goal positions
+    # random start and goal positions
     start = (random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1))
     goal = (random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1))
 
-    # Ensure start and goal are unblocked
+    # ensure start and goal are unblocked
     while grid[start] == 1:
         start = (random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1))
     while grid[goal] == 1:
@@ -230,10 +245,10 @@ def run_AdaptiveAStar(grid_directory, grid_file):
     print(f"Start: {start}")
     print(f"Goal: {goal}")
 
-    # Create an instance of AdaptiveAStar
+    # create an instance of AdaptiveAStar
     astar = AdaptiveAStar(grid, start, goal)
 
-    # Run the agent
+    # run the agent
     success = astar.run()
 
     if success:
@@ -244,5 +259,5 @@ def run_AdaptiveAStar(grid_directory, grid_file):
 
 if __name__ == "__main__":
     grid_directory = '/Users/joonsong/Desktop/Intro-to-AI/Project1/gridworlds'
-    grid_file = 'gridworld_0.npy'  # Replace with your grid file
+    grid_file = 'gridworld_0.npy'  # replace with your grid file (0,1,2,3.....etc)
     run_AdaptiveAStar(grid_directory, grid_file)

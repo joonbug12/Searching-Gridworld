@@ -11,6 +11,10 @@ from AStarAlgorithms import (
     RepeatedAStar
 )
 
+#This file imports the A star algorithms from AStarAlgorithms.py and runs tests on the gridworlds to see
+#the different runtimes and expanded nodes per search. Saves the results onto a csv file to be analyzed
+#Authors: Joon Song, Anay Kothana
+
 # Constants
 GRID_SIZE = 101
 NUM_GRIDWORLDS = 50

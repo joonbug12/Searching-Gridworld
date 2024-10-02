@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
+#File used to open whatever gridworld you input
+#Authors: Joon Song, Anay Kothana
+
 # Function to load and visualize a gridworld from a .npy file
 def load_and_visualize_gridworld(filename):
     # Load the gridworld

@@ -1,3 +1,6 @@
+#Same as the BinaryHeap.py but favoring higher g-values
+#Authors: Joon Song, Anay Kothana
+
 class HigherG_BinaryHeap:
     #constructor for the binary heap
     def __init__(self):

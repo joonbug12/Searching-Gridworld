@@ -1,3 +1,6 @@
+#This file is our own implementation of the Binary Heap
+#Authors: Joon Song, Anay Kothana
+
 class BinaryHeap:
     #constructor for the binary heap
     def __init__(self):
