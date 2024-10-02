@@ -19,7 +19,7 @@ def load_and_visualize_gridworld(filename):
 
 # Main function to open a specific gridworld
 if __name__ == "__main__":
-    # Replace 'gridworld_0.npy' with the path to the gridworld file you want to open
-    filename = 'zgridworld_0.npy'
+    # Replace 'gridworlds/gridworld_0.npy' with the path to the gridworld file you want to open
+    filename = 'gridworlds/gridworld_0.npy'
     
     load_and_visualize_gridworld(filename)
